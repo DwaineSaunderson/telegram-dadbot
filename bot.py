@@ -55,17 +55,6 @@ def dad_joke_trigger_loc(usr_message):
     return min(locs, default=-1)
 
 
-def getName(hs, input):
-    namelen = len(hs)
-    return input[input.find(hs) + namelen:] \
-        .replace(';',',') \
-        .replace('.',',') \
-        .replace('!',',') \
-        .replace('?',',') \
-        .replace('\n', ',') \
-        .split(',')[0].strip()
-
-
 def dad_joke_resp_name(usr_msg, loc):
     return usr_msg[loc:] \
         .replace(';',',') \
