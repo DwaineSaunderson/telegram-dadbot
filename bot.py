@@ -42,7 +42,7 @@ def match_boundary(needle, haystack):
     return re.search(exp, haystack)
 
 
-def dad_joke_trigger_loc(usr_message):
+def dad_joke_trigger_loc(usr_msg):
     joke_triggers = [
         "i am",
         "im",
@@ -50,8 +50,8 @@ def dad_joke_trigger_loc(usr_message):
         "i`m"
     ]
 
-    locs = [match_boundary(x, usr_message).end() for x in joke_triggers
-        if match_boundary(x, usr_message) is not None]
+    locs = [match_boundary(x, usr_msg).end() for x in joke_triggers
+        if match_boundary(x, usr_msg) is not None]
     return min(locs, default=-1)
 
 
@@ -81,7 +81,7 @@ def random_where_dad_reply():
     return random.choice(opts)
 
 
-def where_dad_trigger_loc(usr_message):
+def where_dad_trigger_loc(usr_msg):
     joke_triggers = [
         "wheres dad",
         "where's dad",
@@ -97,22 +97,38 @@ def where_dad_trigger_loc(usr_message):
         "where is dadbot"
     ]
 
-    locs = [match_boundary(x, usr_message).end() for x in joke_triggers
-        if match_boundary(x, usr_message) is not None]
+    locs = [match_boundary(x, usr_msg).end() for x in joke_triggers
+        if match_boundary(x, usr_msg) is not None]
     return min(locs, default=-1)
 
 
-def where_user_trigger_loc(usr_message):
+def where_user_trigger_loc(usr_msg):
     joke_triggers = [
-        "wheres",
-        "where's",
-        "where`s",
-        "where is",
+        "wheres(?= )",
+        "where's(?= )",
+        "where`s(?= )",
+        "where is(?= )",
     ]
 
-    locs = [match_boundary(x, usr_message).end() for x in joke_triggers
-        if match_boundary(x, usr_message) is not None]
-    return min(locs, default=-1)
+    locs = [match_boundary(x, usr_msg).end() for x in joke_triggers
+        if match_boundary(x, usr_msg) is not None]
+
+    target = min(locs, default=-1)
+
+    if target != -1:
+        usr_msg = usr_msg[target:] \
+            .replace(';',',') \
+            .replace('.',',') \
+            .replace('!',',') \
+            .replace('?',',') \
+            .replace('\n', ',') \
+            .split(',')[0].strip()
+        if len(usr_msg) > 0:
+            return target
+    else:
+        return -1
+
+    return -1
 
 
 def be_dadbot(bot, update):
